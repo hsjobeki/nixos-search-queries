@@ -21,7 +21,7 @@ from .schema import load_corpus, load_queries, validate_queries
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="Elasticsearch vs Typesense over NixOS data")
+    ap = argparse.ArgumentParser(description="Elasticsearch vs Typesense vs Quickwit over NixOS data")
     ap.add_argument("--corpus", default="corpus/full.json",
                     help="corpus indexed for relevance + latency + indexing "
                          "(point at a smaller file for a fast dev run)")
@@ -34,6 +34,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--es-url", default="http://localhost:9200")
     ap.add_argument("--ts-url", default="http://localhost:8108")
     ap.add_argument("--ts-key", default="evalkey")
+    ap.add_argument("--qw-url", default="http://localhost:7280")
     args = ap.parse_args(argv)
 
     docs = load_corpus(args.corpus)
@@ -67,6 +68,8 @@ def _build(name: str, args):
         return cls(url=args.es_url)
     if name == "typesense":
         return cls(url=args.ts_url, api_key=args.ts_key)
+    if name == "quickwit":
+        return cls(url=args.qw_url)
     return cls()  # pragma: no cover - registry is exhaustive
 
 

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "searcheval"
 version = "0.1.0"
-description = "Reproducible evaluation harness comparing Elasticsearch and Typesense over NixOS packages and options"
+description = "Reproducible evaluation harness comparing Elasticsearch, Typesense and Quickwit over NixOS packages and options"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

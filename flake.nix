@@ -1,5 +1,5 @@
 {
-  description = "Reproducible search backend evaluation: Elasticsearch vs Typesense over NixOS data";
+  description = "Reproducible search backend evaluation: Elasticsearch vs Typesense vs Quickwit over NixOS data";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -29,7 +29,7 @@
           pythonImportsCheck = [ "searcheval" ];
 
           meta = {
-            description = "Elasticsearch vs Typesense evaluation harness over NixOS packages and options";
+            description = "Elasticsearch vs Typesense vs Quickwit evaluation harness over NixOS packages and options";
             mainProgram = "searcheval";
           };
         };

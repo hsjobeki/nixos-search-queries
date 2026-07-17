@@ -31,6 +31,38 @@
       "success@10": 0.6933333333333334
     }
   },
+  "quickwit": {
+    "by_category": {
+      "dotted": {
+        "mrr": 0.5978730158730159,
+        "success@10": 1.0
+      },
+      "exact": {
+        "mrr": 1.0,
+        "success@10": 1.0
+      },
+      "intent": {
+        "mrr": 0.05333333333333333,
+        "success@10": 0.08
+      },
+      "multiterm": {
+        "mrr": 0.13333333333333333,
+        "success@10": 0.2
+      },
+      "prefix": {
+        "mrr": 0.013000000000000001,
+        "success@10": 0.08
+      },
+      "typo": {
+        "mrr": 0.04,
+        "success@10": 0.04
+      }
+    },
+    "overall": {
+      "mrr": 0.3062566137566138,
+      "success@10": 0.4
+    }
+  },
   "typesense": {
     "by_category": {
       "dotted": {

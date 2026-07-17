@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import itertools
 import json
 from pathlib import Path
 
@@ -139,15 +140,24 @@ def write_matrix(reports: list[EngineReport], out_dir: str | Path) -> Path:
 
 def _significance_section(reports: list[EngineReport]) -> list[str]:
     """Paired-bootstrap CI of the per-query MRR difference, overall and per
-    category. Only defined for a two-engine comparison; the CI answers 'is the
-    gap real or noise' rather than trusting a bare point-estimate ordering."""
-    if len(reports) != 2:
+    category, for every unordered engine pair. The CI answers 'is the gap real
+    or noise' rather than trusting a bare point-estimate ordering. With three or
+    more engines this emits one sub-block per pair; the multiple-comparison
+    caveat (more pairs -> more chances for a spurious CI) is noted in the README."""
+    if len(reports) < 2:
         return []
-    a, b = reports[0], reports[1]
-    lines = [f"## Significance: paired MRR, {a.engine} - {b.engine} (95% bootstrap CI)", ""]
-    lines.append("Positive favors " + a.engine + "; * = CI excludes 0 (significant).")
+    lines = ["## Significance: paired MRR by engine pair (95% bootstrap CI)", ""]
+    lines.append("Each block reports engine A \u2212 B; positive favors A; "
+                 "* = CI excludes 0 (significant).")
     lines.append("")
+    for a, b in itertools.combinations(reports, 2):
+        lines += _pair_significance(a, b)
+    return lines
 
+
+def _pair_significance(a: EngineReport, b: EngineReport) -> list[str]:
+    """One `### A \u2212 B` sub-block: paired MRR diff overall and per category."""
+    lines = [f"### {a.engine} \u2212 {b.engine}", ""]
     groups = [("overall", None)] + [(c, c) for c in sorted(
         {r.category for r in a.results})]
     rows = []

@@ -46,5 +46,25 @@ services:
       timeout: 5s
       retries: 20
 
+  quickwit:
+    image: quickwit/quickwit:0.8.2
+    container_name: eval-quickwit
+    command: run
+    environment:
+      # Keep the eval self-contained: no telemetry, no OTLP listener.
+      - QW_ENABLE_OTLP_ENDPOINT=false
+      - NO_COLOR=1
+    ports:
+      - "7280:7280"
+    mem_limit: 2g
+    healthcheck:
+      # The quickwit image ships curl; hit the version endpoint. The adapter's
+      # wait_ready() is the real gate, this just gates `depends_on`/compose health.
+      test: ["CMD-SHELL", "curl -sf http://localhost:7280/api/v1/version || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+
 volumes:
   typesense-data:
