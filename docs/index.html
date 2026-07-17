@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NixOS search backend evaluation</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap">
+      <h1>NixOS search backend evaluation</h1>
+      <p class="lede" id="lede">Loading&hellip;</p>
+      <div class="legend" id="legend"></div>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <div class="wrap">
+      <a href="#overview">Overview</a>
+      <a href="#categories">Categories</a>
+      <a href="#significance">Significance</a>
+      <a href="#explorer">Query explorer</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section id="overview">
+      <h2>Overview</h2>
+
+      <div class="panel">
+        <h3>Relevance <span class="hint good">higher is better</span></h3>
+        <p class="note">Known-item metrics, all on a 0&ndash;1 scale. Success@10: the
+          answer appears in the top 10. MRR: how high the first correct answer ranks.
+          Recall@10: share of a query&rsquo;s correct answers reaching the top 10.</p>
+        <div class="chart" id="chart-relevance"></div>
+        <div class="table-scroll"><table id="table-relevance"></table></div>
+      </div>
+
+      <div class="panel">
+        <h3>Latency, ms <span class="hint bad">lower is better</span></h3>
+        <p class="note">Warm caches, fastest-of-5 per query. p50 is the typical feel;
+          p99 is the tail you actually notice.</p>
+        <div class="chart" id="chart-latency"></div>
+        <div class="table-scroll"><table id="table-latency"></table></div>
+      </div>
+
+      <div class="panel">
+        <h3>Indexing</h3>
+        <div class="table-scroll"><table id="table-indexing"></table></div>
+        <p class="note" id="footprint-note"></p>
+      </div>
+    </section>
+
+    <section id="categories">
+      <h2>By query category</h2>
+      <div class="panel">
+        <div class="toggle" id="cat-toggle" role="group" aria-label="metric"></div>
+        <p class="note">Per-category score, engine &times; category. Darker is stronger
+          (0&ndash;1 scale). Six categories, 25 queries each.</p>
+        <div class="heatmap" id="heatmap"></div>
+      </div>
+    </section>
+
+    <section id="significance">
+      <h2>Significance <span class="hint">paired MRR, 95% bootstrap CI</span></h2>
+      <p class="note">Each panel compares two engines on per-query MRR, overall and per
+        category. The bar spans the 95% confidence interval of the mean difference; the
+        dot is the point estimate. Positive favors the first engine. A bar that clears
+        the zero line (marked <strong>&lowast;</strong>) is significant.</p>
+      <div id="sig-panels"></div>
+    </section>
+
+    <section id="explorer">
+      <h2>Query explorer</h2>
+      <div class="explorer">
+        <aside class="rail">
+          <input type="search" id="q-filter" placeholder="Filter by text or id&hellip;"
+                 autocomplete="off" spellcheck="false" />
+          <div class="chips" id="cat-chips"></div>
+          <div class="q-count" id="q-count"></div>
+          <ol class="q-list" id="q-list"></ol>
+        </aside>
+        <div class="detail" id="q-detail">
+          <p class="empty">Select a query to see how each engine ranked it.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p id="footer-meta"></p>
+  </footer>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

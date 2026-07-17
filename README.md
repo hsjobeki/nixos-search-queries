@@ -222,11 +222,15 @@ searcheval/
   harness.py              known-item relevance + latency/indexing in one pass
   report.py               Markdown matrix + raw per-query JSON
   stats.py                paired-bootstrap significance test
+  site.py                 combined data.json payload for the visualization
   engines/                Elasticsearch + Typesense + Quickwit adapters (SearchEngine ABC)
   cli.py                  searcheval entry point
   fetch_corpus.py         searcheval-fetch-corpus: full packages+options dataset
-scripts/tune.py           no-regression gate against baseline.json
-tests/                    metrics/schema/harness/engines/report/queryset unit tests
+scripts/
+  tune.py                 no-regression gate against baseline.json
+  build_site.py           regenerate docs/data.json from results/raw_*.json
+docs/                     interactive static visualization (index.html + data.json, GitHub Pages)
+tests/                    metrics/schema/harness/engines/report/site/queryset unit tests
 ```
 
 ## Reproduce
@@ -243,6 +247,22 @@ The run writes two files:
 
 So any headline number traces back to a specific query. `docker compose up -d` starts all three engines. Restrict the run with `--engine quickwit` (repeatable). Point `--corpus` at a smaller file for a fast dev run. Run `python scripts/tune.py check` to re-verify the no-regression gate.
 
+## Visualization
+
+An interactive dashboard lives in `docs/`, served as GitHub Pages
+
+```sh
+python scripts/build_site.py
+```
+
+Preview locally
+
+```sh
+python -m http.server -d docs 8000   # then open http://localhost:8000/
+```
+
+To add a new backend: implement the adapter → run the eval → `python scripts/build_site.py` → commit `docs/`.
+
 ## Development
 
 ```sh
@@ -257,5 +277,6 @@ The test suite covers each layer:
 - `tests/test_engines.py` locks the engine registry and Quickwit's config and query shapes.
 - `tests/test_report.py` locks the N-engine significance rendering.
 - `tests/test_queryset.py` locks the judged set's validity invariants.
+- `tests/test_site.py` locks the engine-agnostic visualization payload builder.
 
 The live Elasticsearch, Typesense, and Quickwit comparison needs the Docker services up.

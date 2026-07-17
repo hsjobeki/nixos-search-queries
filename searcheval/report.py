@@ -155,21 +155,41 @@ def _significance_section(reports: list[EngineReport]) -> list[str]:
     return lines
 
 
-def _pair_significance(a: EngineReport, b: EngineReport) -> list[str]:
-    """One `### A \u2212 B` sub-block: paired MRR diff overall and per category."""
-    lines = [f"### {a.engine} \u2212 {b.engine}", ""]
+def significance_rows(a: list[QueryResult], b: list[QueryResult]) -> list[dict]:
+    """Paired-bootstrap MRR CI overall and per category, as structured rows.
+
+    Groups are ``overall`` plus each category present in ``a`` (sorted). A group
+    with no paired observations is skipped, matching the Markdown behavior. This
+    is the single source of truth for significance: the Markdown report and the
+    site JSON builder both format these deterministic (seed=0) rows."""
     groups = [("overall", None)] + [(c, c) for c in sorted(
-        {r.category for r in a.results})]
-    rows = []
+        {r.category for r in a})]
+    rows: list[dict] = []
     for label, cat in groups:
-        xs, ys = _paired_mrr(a.results, b.results, cat)
+        xs, ys = _paired_mrr(a, b, cat)
         if not xs:
             continue
         ci = paired_bootstrap_ci(xs, ys)
-        mark = " *" if ci.significant else ""
-        rows.append([label, str(ci.n),
-                     f"{ci.mean_diff:+.3f}",
-                     f"[{ci.lo:+.3f}, {ci.hi:+.3f}]{mark}"])
+        rows.append({
+            "group": label,
+            "n": ci.n,
+            "mean_diff": ci.mean_diff,
+            "lo": ci.lo,
+            "hi": ci.hi,
+            "significant": ci.significant,
+        })
+    return rows
+
+
+def _pair_significance(a: EngineReport, b: EngineReport) -> list[str]:
+    """One `### A \u2212 B` sub-block: paired MRR diff overall and per category."""
+    lines = [f"### {a.engine} \u2212 {b.engine}", ""]
+    rows = []
+    for r in significance_rows(a.results, b.results):
+        mark = " *" if r["significant"] else ""
+        rows.append([r["group"], str(r["n"]),
+                     f"{r['mean_diff']:+.3f}",
+                     f"[{r['lo']:+.3f}, {r['hi']:+.3f}]{mark}"])
     lines += _table(["group", "n", "mean MRR diff", "95% CI"], rows)
     lines.append("")
     return lines
