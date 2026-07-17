@@ -1,0 +1,50 @@
+# Both engines pinned, single-node, security relaxed for local evaluation ONLY.
+# Same host, comparable resource limits, so the engine is the only variable.
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: eval-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      # Local eval on a possibly-full disk: the tiny corpus needs almost no
+      # space, but ES's percentage-based flood-stage watermark (95%) would mark
+      # indices read-only and block shard allocation. Disable the disk decider.
+      - cluster.routing.allocation.disk.threshold_enabled=false
+    ports:
+      - "9200:9200"
+    mem_limit: 2g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  typesense:
+    image: typesense/typesense:27.1
+    container_name: eval-typesense
+    command: >-
+      --data-dir /data
+      --api-key=evalkey
+      --enable-cors
+    volumes:
+      - typesense-data:/data
+    ports:
+      - "8108:8108"
+    mem_limit: 2g
+    healthcheck:
+      # The Typesense image ships no curl/wget; use bash's /dev/tcp to confirm
+      # the server is accepting connections on its API port.
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/localhost/8108"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  typesense-data:

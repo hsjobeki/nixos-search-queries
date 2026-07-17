@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Fetched full corpus (large, reproducible via scripts/fetch_corpus.py)
+corpus/full.json
+
+# Evaluation output
+results/
+result
