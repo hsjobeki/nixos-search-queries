@@ -31,7 +31,7 @@ from searcheval.schema import load_corpus, load_queries, validate_queries  # noq
 
 CORPUS = ROOT / "corpus" / "full.json"
 QUERIES = ROOT / "queries" / "queries.json"
-BASELINE = ROOT / "results" / "baseline.json"
+BASELINE = ROOT / "baseline.json"
 EPS = 0.005  # float-noise tolerance; ranking is deterministic so this is generous
 
 

@@ -1,0 +1,66 @@
+{
+  "elasticsearch": {
+    "by_category": {
+      "dotted": {
+        "mrr": 0.7266666666666667,
+        "success@10": 0.92
+      },
+      "exact": {
+        "mrr": 1.0,
+        "success@10": 1.0
+      },
+      "intent": {
+        "mrr": 0.01,
+        "success@10": 0.04
+      },
+      "multiterm": {
+        "mrr": 0.3473333333333333,
+        "success@10": 0.56
+      },
+      "prefix": {
+        "mrr": 0.3744920634920635,
+        "success@10": 0.72
+      },
+      "typo": {
+        "mrr": 0.8257142857142857,
+        "success@10": 0.92
+      }
+    },
+    "overall": {
+      "mrr": 0.5473677248677249,
+      "success@10": 0.6933333333333334
+    }
+  },
+  "typesense": {
+    "by_category": {
+      "dotted": {
+        "mrr": 0.24971428571428572,
+        "success@10": 0.48
+      },
+      "exact": {
+        "mrr": 1.0,
+        "success@10": 1.0
+      },
+      "intent": {
+        "mrr": 0.045714285714285714,
+        "success@10": 0.08
+      },
+      "multiterm": {
+        "mrr": 0.26,
+        "success@10": 0.28
+      },
+      "prefix": {
+        "mrr": 0.03704761904761905,
+        "success@10": 0.2
+      },
+      "typo": {
+        "mrr": 0.04082539682539682,
+        "success@10": 0.2
+      }
+    },
+    "overall": {
+      "mrr": 0.2722169312169312,
+      "success@10": 0.37333333333333335
+    }
+  }
+}

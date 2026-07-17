@@ -114,7 +114,7 @@ Footprint uses each engine's native measure — Elasticsearch's on-disk Lucene s
 
 ### Configuration dominates
 
-On this corpus, how you tune an engine moves the result more than which engine you pick. Moving from the pre-tuning baseline to the best-practice config above raises overall Success@10 from 0.69 to 0.80 (Elasticsearch) and from 0.37 to 0.74 (Typesense). That change also turns a significant Elasticsearch MRR lead (+0.275) into a tie (+0.004). A no-regression gate (`scripts/tune.py`) locks these gains against a committed baseline (`results/baseline.json`). Every reported number reflects a deliberately tuned engine, not a default.
+On this corpus, how you tune an engine moves the result more than which engine you pick. Moving from the pre-tuning baseline to the best-practice config above raises overall Success@10 from 0.69 to 0.80 (Elasticsearch) and from 0.37 to 0.74 (Typesense). That change also turns a significant Elasticsearch MRR lead (+0.275) into a tie (+0.004). A no-regression gate (`scripts/tune.py`) locks these gains against a committed baseline (`baseline.json`). Every reported number reflects a deliberately tuned engine, not a default.
 
 ### Trade-offs are per-category
 
@@ -148,6 +148,7 @@ Both engines answer the same queries, so the comparison is paired. Significance 
 ```
 corpus/full.json          168,679-doc packages+options corpus
 queries/queries.json      150 labeled queries (145 unique canonical-entry-point labels)
+baseline.json             locked pre-tuning yardstick for scripts/tune.py
 searcheval/
   schema.py               Doc/Query model + NixOS JSON normalization
   metrics.py              pure ranking/latency metrics
@@ -157,7 +158,7 @@ searcheval/
   engines/                Elasticsearch + Typesense adapters (SearchEngine ABC)
   cli.py                  searcheval entry point
   fetch_corpus.py         searcheval-fetch-corpus: full packages+options dataset
-scripts/tune.py           no-regression gate against results/baseline.json
+scripts/tune.py           no-regression gate against baseline.json
 tests/                    metrics/schema/harness/queryset unit tests
 ```
 
